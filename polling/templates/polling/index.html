@@ -1,0 +1,11 @@
+<h1>Welcome to polling</h1>
+{% if qustn_list %}
+<ul>
+    {% for question in qustn_list %}
+    <li>
+        <a href="/polling/{{question.id}}/">{{question.question_txt}}<br><br></a>
+    </li>{% endfor %}
+</ul>
+{% else %}
+    <p>No polling available</p>
+{% endif %}
