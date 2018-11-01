@@ -1,0 +1,7 @@
+<h2>{{q.question_txt}}</h2>
+<ul>
+    {% for choice in q.choice_set.all %}
+    <li>
+        <a href="/polling/{{q.id}}/vote/">{{choice.choice_txt}}</a>
+    </li>{% endfor %}
+</ul>
