@@ -10,7 +10,7 @@ app_name= 'polling'
 #    path('<int:question_id>/results/',views.results, name='results'),
 #]
 
-urlpatterna[
+urlpatterns[
    path('',views.IndexView.as_view(), name='index'),
    path('<int:pk>/',views.DetailView.as_view(), name='detail'),
    path('<int:pk>/vote/',views.VoteView.as_view(), name='vote'),
