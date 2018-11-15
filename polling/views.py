@@ -2,32 +2,28 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Question,Choice
 from django.urls import reverse
-
-#from django.template import loader
+from django.views import generic
 
 #def index(request):
-#    qustn_list= Question.objects.order_by("-pub_date")
-#    template = loader.get_template('polling/index.html')
-#    context = {'qustn_list':qustn_list}
-#    return HttpResponse(template.render(context,request))
+#    qustn_list = Question.objects.order_by("-pub_date")
+#    return render(request,'polling/index.html',{'qustn_list':qustn_list})
 
-def index(request):
-    qustn_list = Question.objects.order_by("-pub_date")
-    return render(request,'polling/index.html',{'qustn_list':qustn_list})
+class IndexView(generic.ListView):
+    template_name = 'polling/index.html'
+    context_object_name = 'latest_question_list'
 
-#def detail(request,question_id):
- #   try:
-  #      q = Question.objects.get(pk=question_id)
-   #     template = loader.get_template('polling/detail.html')
-    #    context = {'q': q}
-    #except Question.DoesNotExist:
-     #   raise Http404("Question Does not Exist")
-    #return HttpResponse(template.render(context, request))
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+    
+#def detail(request, question_id):
+#    q= get_object_or_404(Question, pk=question_id)
+ #   return render(request,'polling/detail.html',{'q':q})
 
-def detail(request, question_id):
-    q= get_object_or_404(Question, pk=question_id)
-    return render(request,'polling/detail.html',{'q':q})
-
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polling/detail.html'
+    
 def vote(request,question_id):
     q = get_object_or_404(Question, pk=question_id)
     try:
@@ -39,9 +35,10 @@ def vote(request,question_id):
         selected_choice.save()
         return HttpResponseRedirect(reverse('polling:results', args=(q.id,)))
 
-def results(request,question_id):
-    q = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polling/result.html', {'q': q})
+#def results(request,question_id):
+  #  q = get_object_or_404(Question, pk=question_id)
+  #  return render(request, 'polling/result.html', {'q': q})
 
-
-
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polling/result.html'
